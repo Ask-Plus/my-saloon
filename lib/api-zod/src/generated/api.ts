@@ -286,6 +286,7 @@ export const GetAppointmentsResponseItem = zod.object({
   endTime: zod.string(),
   status: zod.string(),
   paymentStatus: zod.string(),
+  notes: zod.string().optional(),
   createdAt: zod.string(),
 });
 export const GetAppointmentsResponse = zod.array(GetAppointmentsResponseItem);
@@ -308,6 +309,7 @@ export const CreateAppointmentBody = zod.object({
   endTime: zod.string(),
   status: zod.string(),
   paymentStatus: zod.string(),
+  notes: zod.string().optional(),
 });
 
 /**
@@ -333,6 +335,7 @@ export const GetAppointmentResponse = zod.object({
   endTime: zod.string(),
   status: zod.string(),
   paymentStatus: zod.string(),
+  notes: zod.string().optional(),
   createdAt: zod.string(),
 });
 
@@ -364,6 +367,7 @@ export const UpdateAppointmentResponse = zod.object({
   endTime: zod.string(),
   status: zod.string(),
   paymentStatus: zod.string(),
+  notes: zod.string().optional(),
   createdAt: zod.string(),
 });
 

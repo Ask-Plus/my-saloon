@@ -3,10 +3,14 @@ import { isLiquidGlassAvailable } from 'expo-glass-effect';
 import { Tabs } from 'expo-router';
 import { Icon, Label, NativeTabs } from 'expo-router/unstable-native-tabs';
 import { SymbolView } from 'expo-symbols';
-import { Feather, Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { Platform, StyleSheet, View, useColorScheme } from 'react-native';
+import { Platform, StyleSheet, Text, View, useColorScheme } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useColors } from '@/hooks/useColors';
+
+function TabEmoji({ emoji, color, size = 22 }: { emoji: string; color: string; size?: number }) {
+  return <Text style={{ fontSize: size }}>{emoji}</Text>;
+}
 
 function NativeOwnerTabs() {
   return (
@@ -39,8 +43,12 @@ function ClassicOwnerTabs() {
   const colors = useColors();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const insets = useSafeAreaInsets();
   const isIOS = Platform.OS === 'ios';
   const isWeb = Platform.OS === 'web';
+
+  const tabBarHeight = isWeb ? 84 : 56;
+  const bottomPad = isIOS ? Math.max(insets.bottom, 16) : Math.max(insets.bottom, 8);
 
   return (
     <Tabs
@@ -49,12 +57,19 @@ function ClassicOwnerTabs() {
         tabBarInactiveTintColor: colors.mutedForeground,
         headerShown: false,
         tabBarStyle: {
-          position: 'absolute',
+          position: isIOS ? 'absolute' : undefined,
           backgroundColor: isIOS ? 'transparent' : colors.background,
           borderTopWidth: 1,
           borderTopColor: colors.border,
           elevation: 0,
-          height: isWeb ? 84 : 60,
+          height: tabBarHeight + bottomPad,
+          paddingBottom: bottomPad,
+          paddingTop: 6,
+        },
+        tabBarLabelStyle: {
+          fontSize: 10,
+          fontFamily: 'Inter_600SemiBold',
+          marginTop: 2,
         },
         tabBarBackground: () =>
           isIOS ? (
@@ -69,7 +84,7 @@ function ClassicOwnerTabs() {
         options={{
           title: 'Dashboard',
           tabBarIcon: ({ color }) =>
-            isIOS ? <SymbolView name="chart.bar.fill" tintColor={color} size={22} /> : <Feather name="bar-chart-2" size={22} color={color} />,
+            isIOS ? <SymbolView name="chart.bar.fill" tintColor={color} size={20} /> : <TabEmoji emoji="📊" color={color} />,
         }}
       />
       <Tabs.Screen
@@ -77,7 +92,7 @@ function ClassicOwnerTabs() {
         options={{
           title: 'Services',
           tabBarIcon: ({ color }) =>
-            isIOS ? <SymbolView name="list.bullet" tintColor={color} size={22} /> : <Ionicons name="cut-outline" size={22} color={color} />,
+            isIOS ? <SymbolView name="list.bullet" tintColor={color} size={20} /> : <TabEmoji emoji="✂" color={color} />,
         }}
       />
       <Tabs.Screen
@@ -85,7 +100,7 @@ function ClassicOwnerTabs() {
         options={{
           title: 'Stylists',
           tabBarIcon: ({ color }) =>
-            isIOS ? <SymbolView name="person.2" tintColor={color} size={22} /> : <Feather name="users" size={22} color={color} />,
+            isIOS ? <SymbolView name="person.2" tintColor={color} size={20} /> : <TabEmoji emoji="💇" color={color} />,
         }}
       />
       <Tabs.Screen
@@ -93,7 +108,7 @@ function ClassicOwnerTabs() {
         options={{
           title: 'Slots',
           tabBarIcon: ({ color }) =>
-            isIOS ? <SymbolView name="clock" tintColor={color} size={22} /> : <Feather name="clock" size={22} color={color} />,
+            isIOS ? <SymbolView name="clock" tintColor={color} size={20} /> : <TabEmoji emoji="🕐" color={color} />,
         }}
       />
       <Tabs.Screen
@@ -101,7 +116,7 @@ function ClassicOwnerTabs() {
         options={{
           title: 'Bookings',
           tabBarIcon: ({ color }) =>
-            isIOS ? <SymbolView name="calendar" tintColor={color} size={22} /> : <Feather name="calendar" size={22} color={color} />,
+            isIOS ? <SymbolView name="calendar" tintColor={color} size={20} /> : <TabEmoji emoji="📋" color={color} />,
         }}
       />
     </Tabs>

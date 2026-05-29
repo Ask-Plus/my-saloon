@@ -1,6 +1,5 @@
 import { useColors } from '@/hooks/useColors';
 import { Stylist } from '@/types';
-import { Feather, Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import React, { useState } from 'react';
 import {
@@ -61,7 +60,7 @@ function StylistModal({ visible, onClose, onSave, initial }: {
           <View style={s.handle} />
           <View style={s.header}>
             <Text style={s.headerTitle}>{initial ? 'Edit Stylist' : 'Add Stylist'}</Text>
-            <TouchableOpacity onPress={onClose}><Feather name="x" size={22} color={colors.foreground} /></TouchableOpacity>
+            <TouchableOpacity onPress={onClose}><Text style={{ fontSize: 20, color: colors.foreground }}>✕</Text></TouchableOpacity>
           </View>
           <ScrollView style={s.body} keyboardShouldPersistTaps="handled">
             <Text style={s.label}>Full Name *</Text>
@@ -96,7 +95,9 @@ export default function OwnerStylistsScreen() {
   const deleteMutation = useDeleteStylist({ mutation: { onSuccess: invalidate } });
 
   const topPad = insets.top + (Platform.OS === 'web' ? 67 : 0);
-  const bottomPad = insets.bottom + (Platform.OS === 'web' ? 34 : 0) + 80;
+  const bottomPad = Platform.OS === 'android'
+    ? insets.bottom + 16
+    : insets.bottom + (Platform.OS === 'web' ? 34 : 0) + 72;
 
   const handleSave = (data: Omit<Stylist, 'id' | 'createdAt'>) => {
     if (editing) updateMutation.mutate({ id: editing.id, data });
@@ -143,7 +144,7 @@ export default function OwnerStylistsScreen() {
       <View style={s.header}>
         <Text style={s.title}>Stylists</Text>
         <TouchableOpacity style={s.addBtn} onPress={() => { setEditing(null); setModalVisible(true); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}>
-          <Feather name="plus" size={22} color="#fff" />
+          <Text style={{ fontSize: 24, color: '#fff', lineHeight: 28 }}>+</Text>
         </TouchableOpacity>
       </View>
 
@@ -161,7 +162,7 @@ export default function OwnerStylistsScreen() {
               </View>
               <View>
                 <View style={s.ratingRow}>
-                  <Ionicons name="star" size={13} color="#f59e0b" />
+                  <Text style={{ fontSize: 12 }}>⭐</Text>
                   <Text style={s.ratingText}>{item.rating.toFixed(1)}</Text>
                 </View>
                 <Text style={s.reviewText}>{item.reviewCount} reviews</Text>
@@ -174,17 +175,17 @@ export default function OwnerStylistsScreen() {
             </View>
             <View style={s.actions}>
               <TouchableOpacity onPress={() => { setEditing(item); setModalVisible(true); }}>
-                <Feather name="edit-2" size={18} color={colors.mutedForeground} />
+                <Text style={{ fontSize: 16, color: colors.mutedForeground }}>✏</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => handleDelete(item.id, item.name)}>
-                <Feather name="trash-2" size={18} color={colors.destructive} />
+                <Text style={{ fontSize: 16, color: colors.destructive }}>🗑</Text>
               </TouchableOpacity>
             </View>
           </View>
         )}
         ListEmptyComponent={
           <View style={{ alignItems: 'center', paddingTop: 60 }}>
-            <Ionicons name="people-outline" size={48} color={colors.border} />
+            <Text style={{ fontSize: 48 }}>💇</Text>
             <Text style={{ color: colors.mutedForeground, marginTop: 12, fontFamily: 'Inter_500Medium' }}>No stylists yet</Text>
           </View>
         }

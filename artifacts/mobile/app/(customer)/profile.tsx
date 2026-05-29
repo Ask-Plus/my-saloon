@@ -1,6 +1,5 @@
 import { useColors } from '@/hooks/useColors';
 import { useAuth } from '@/context/AuthContext';
-import { Feather, Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
 import React, { useMemo } from 'react';
@@ -45,37 +44,57 @@ export default function CustomerProfileScreen() {
   };
 
   const topPad = insets.top + (Platform.OS === 'web' ? 67 : 0);
-  const bottomPad = insets.bottom + (Platform.OS === 'web' ? 34 : 0) + 80;
+  const bottomPad = Platform.OS === 'android'
+    ? insets.bottom + 16
+    : insets.bottom + (Platform.OS === 'web' ? 34 : 0) + 72;
+
+  const initials = user?.name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() ?? '?';
 
   const s = StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background },
     header: {
-      paddingTop: topPad + 24, paddingHorizontal: 20, paddingBottom: 24,
+      paddingTop: topPad + 24, paddingHorizontal: 20, paddingBottom: 28,
       alignItems: 'center', backgroundColor: colors.primary,
     },
     avatar: {
-      width: 76, height: 76, borderRadius: 38,
+      width: 80, height: 80, borderRadius: 40,
       backgroundColor: 'rgba(255,255,255,0.25)',
       alignItems: 'center', justifyContent: 'center',
       borderWidth: 3, borderColor: 'rgba(255,255,255,0.5)', marginBottom: 12,
     },
+    avatarText: { fontSize: 28, fontFamily: 'Inter_700Bold', color: '#fff' },
     name: { fontSize: 22, fontFamily: 'Inter_700Bold', color: '#fff' },
-    phone: { fontSize: 14, color: 'rgba(255,255,255,0.8)', marginTop: 4, fontFamily: 'Inter_400Regular' },
-    statsRow: {
-      flexDirection: 'row', margin: 20,
-      backgroundColor: colors.card, borderRadius: colors.radius + 4,
-      borderWidth: 1, borderColor: colors.border, overflow: 'hidden',
+    phone: { fontSize: 14, color: 'rgba(255,255,255,0.75)', marginTop: 4, fontFamily: 'Inter_400Regular' },
+    roleBadge: {
+      marginTop: 10, backgroundColor: 'rgba(255,255,255,0.2)',
+      paddingHorizontal: 14, paddingVertical: 5, borderRadius: 20,
     },
-    statItem: { flex: 1, paddingVertical: 16, alignItems: 'center' },
+    roleText: { fontSize: 12, fontFamily: 'Inter_600SemiBold', color: '#fff' },
+    statsRow: {
+      flexDirection: 'row', margin: 16,
+      backgroundColor: colors.card, borderRadius: 16,
+      borderWidth: 1, borderColor: colors.border, overflow: 'hidden',
+      shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.05, shadowRadius: 8, elevation: 2,
+    },
+    statItem: { flex: 1, paddingVertical: 18, alignItems: 'center' },
     statDivider: { width: 1, backgroundColor: colors.border },
+    statEmoji: { fontSize: 20, marginBottom: 4 },
     statVal: { fontSize: 22, fontFamily: 'Inter_700Bold', color: colors.foreground },
-    statLabel: { fontSize: 11, color: colors.mutedForeground, fontFamily: 'Inter_500Medium', marginTop: 2, textTransform: 'uppercase', letterSpacing: 0.5 },
-    section: { marginHorizontal: 20, marginBottom: 8 },
+    statLabel: { fontSize: 11, color: colors.mutedForeground, fontFamily: 'Inter_600SemiBold', marginTop: 2, textTransform: 'uppercase', letterSpacing: 0.5 },
+    section: { marginHorizontal: 16, marginBottom: 12 },
     sectionTitle: { fontSize: 12, fontFamily: 'Inter_700Bold', color: colors.mutedForeground, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8, marginLeft: 4 },
-    menuCard: { backgroundColor: colors.card, borderRadius: colors.radius + 4, borderWidth: 1, borderColor: colors.border, overflow: 'hidden' },
-    menuItem: { flexDirection: 'row', alignItems: 'center', padding: 16, gap: 12 },
-    menuIconWrap: { width: 36, height: 36, borderRadius: 10, backgroundColor: colors.muted, alignItems: 'center', justifyContent: 'center' },
+    menuCard: {
+      backgroundColor: colors.card, borderRadius: 16, borderWidth: 1, borderColor: colors.border,
+      overflow: 'hidden', shadowColor: '#000', shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.04, shadowRadius: 4, elevation: 1,
+    },
+    menuItem: { flexDirection: 'row', alignItems: 'center', padding: 16, gap: 14 },
+    menuItemDivider: { height: 1, backgroundColor: colors.border, marginHorizontal: 16 },
+    menuEmojiWrap: { width: 38, height: 38, borderRadius: 12, backgroundColor: colors.muted, alignItems: 'center', justifyContent: 'center' },
+    menuEmoji: { fontSize: 18 },
     menuText: { flex: 1, fontSize: 15, fontFamily: 'Inter_500Medium', color: colors.foreground },
+    menuChevron: { fontSize: 18, color: colors.mutedForeground },
     menuDestructive: { color: colors.destructive },
     bottomPad: { height: bottomPad },
   });
@@ -84,25 +103,31 @@ export default function CustomerProfileScreen() {
     <View style={s.container}>
       <View style={s.header}>
         <View style={s.avatar}>
-          <Ionicons name="person" size={36} color="rgba(255,255,255,0.9)" />
+          <Text style={s.avatarText}>{initials}</Text>
         </View>
         <Text style={s.name}>{user?.name}</Text>
         <Text style={s.phone}>{user?.phone}</Text>
+        <View style={s.roleBadge}>
+          <Text style={s.roleText}>✨  Customer</Text>
+        </View>
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={s.statsRow}>
           <View style={s.statItem}>
+            <Text style={s.statEmoji}>📋</Text>
             <Text style={s.statVal}>{stats.total}</Text>
             <Text style={s.statLabel}>Total</Text>
           </View>
           <View style={s.statDivider} />
           <View style={s.statItem}>
+            <Text style={s.statEmoji}>📅</Text>
             <Text style={s.statVal}>{stats.upcoming}</Text>
             <Text style={s.statLabel}>Upcoming</Text>
           </View>
           <View style={s.statDivider} />
           <View style={s.statItem}>
+            <Text style={s.statEmoji}>💰</Text>
             <Text style={[s.statVal, { color: colors.primary }]}>${stats.spent}</Text>
             <Text style={s.statLabel}>Spent</Text>
           </View>
@@ -112,24 +137,41 @@ export default function CustomerProfileScreen() {
           <Text style={s.sectionTitle}>My Account</Text>
           <View style={s.menuCard}>
             <TouchableOpacity style={s.menuItem} onPress={() => router.push('/(customer)/appointments')}>
-              <View style={s.menuIconWrap}><Feather name="calendar" size={18} color={colors.primary} /></View>
+              <View style={s.menuEmojiWrap}><Text style={s.menuEmoji}>📅</Text></View>
               <Text style={s.menuText}>My Appointments</Text>
-              <Feather name="chevron-right" size={18} color={colors.mutedForeground} />
+              <Text style={s.menuChevron}>›</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         <View style={s.section}>
-          <Text style={s.sectionTitle}>More</Text>
+          <Text style={s.sectionTitle}>Support</Text>
+          <View style={s.menuCard}>
+            <TouchableOpacity style={s.menuItem}>
+              <View style={s.menuEmojiWrap}><Text style={s.menuEmoji}>💬</Text></View>
+              <Text style={s.menuText}>Help & Support</Text>
+              <Text style={s.menuChevron}>›</Text>
+            </TouchableOpacity>
+            <View style={s.menuItemDivider} />
+            <TouchableOpacity style={s.menuItem}>
+              <View style={s.menuEmojiWrap}><Text style={s.menuEmoji}>⭐</Text></View>
+              <Text style={s.menuText}>Rate the App</Text>
+              <Text style={s.menuChevron}>›</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={s.section}>
           <View style={s.menuCard}>
             <TouchableOpacity style={s.menuItem} onPress={handleLogout}>
-              <View style={[s.menuIconWrap, { backgroundColor: '#ef44441A' }]}>
-                <Feather name="log-out" size={18} color={colors.destructive} />
+              <View style={[s.menuEmojiWrap, { backgroundColor: '#ef44441A' }]}>
+                <Text style={s.menuEmoji}>🚪</Text>
               </View>
               <Text style={[s.menuText, s.menuDestructive]}>Sign Out</Text>
             </TouchableOpacity>
           </View>
         </View>
+
         <View style={s.bottomPad} />
       </ScrollView>
     </View>

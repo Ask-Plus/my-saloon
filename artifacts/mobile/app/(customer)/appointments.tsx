@@ -2,7 +2,6 @@ import { useColors } from '@/hooks/useColors';
 import { useAuth } from '@/context/AuthContext';
 import { useNotification } from '@/context/NotificationContext';
 import { Appointment } from '@/types';
-import { Feather, Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import React, { useMemo, useState } from 'react';
 import {
@@ -29,37 +28,41 @@ function AppointmentCard({ appointment, onCancel }: { appointment: Appointment; 
 
   const s = StyleSheet.create({
     card: {
-      backgroundColor: colors.card, borderRadius: colors.radius + 4,
-      marginHorizontal: 20, marginBottom: 12,
+      backgroundColor: colors.card, borderRadius: 16,
+      marginHorizontal: 16, marginBottom: 12,
       borderWidth: 1, borderColor: colors.border, overflow: 'hidden',
+      shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.05, shadowRadius: 6, elevation: 2,
     },
-    statusBar: { height: 3, backgroundColor: statusColor },
+    statusBar: { height: 4, backgroundColor: statusColor },
     body: { padding: 16 },
-    row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 },
-    serviceName: { fontSize: 16, fontFamily: 'Inter_700Bold', color: colors.foreground, flex: 1 },
-    statusBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20, backgroundColor: `${statusColor}1A` },
-    statusText: { fontSize: 12, fontFamily: 'Inter_600SemiBold', color: statusColor },
+    topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 },
+    serviceName: { fontSize: 17, fontFamily: 'Inter_700Bold', color: colors.foreground, flex: 1, marginRight: 10 },
+    statusBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20, backgroundColor: `${statusColor}18` },
+    statusText: { fontSize: 12, fontFamily: 'Inter_700Bold', color: statusColor },
     infoRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 },
+    infoEmoji: { fontSize: 13 },
     infoText: { fontSize: 13, color: colors.mutedForeground, fontFamily: 'Inter_400Regular' },
+    sep: { fontSize: 13, color: colors.border },
     divider: { height: 1, backgroundColor: colors.border, marginVertical: 12 },
     footer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-    price: { fontSize: 18, fontFamily: 'Inter_700Bold', color: colors.foreground },
+    price: { fontSize: 20, fontFamily: 'Inter_700Bold', color: colors.foreground },
     paidBadge: {
       flexDirection: 'row', alignItems: 'center', gap: 4,
-      backgroundColor: '#22c55e1A', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 20,
+      backgroundColor: '#22c55e18', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 20,
     },
-    paidText: { fontSize: 11, fontFamily: 'Inter_600SemiBold', color: '#22c55e' },
+    paidText: { fontSize: 12, fontFamily: 'Inter_700Bold', color: '#22c55e' },
     pendingBadge: {
       flexDirection: 'row', alignItems: 'center', gap: 4,
-      backgroundColor: '#f59e0b1A', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 20,
+      backgroundColor: '#f59e0b18', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 20,
     },
-    pendingText: { fontSize: 11, fontFamily: 'Inter_600SemiBold', color: '#f59e0b' },
+    pendingText: { fontSize: 12, fontFamily: 'Inter_700Bold', color: '#f59e0b' },
     cancelBtn: {
-      flexDirection: 'row', alignItems: 'center', gap: 4,
-      paddingHorizontal: 10, paddingVertical: 6, borderRadius: colors.radius,
-      borderWidth: 1, borderColor: colors.destructive,
+      flexDirection: 'row', alignItems: 'center', gap: 5,
+      paddingHorizontal: 12, paddingVertical: 7, borderRadius: 10,
+      borderWidth: 1.5, borderColor: colors.destructive,
     },
-    cancelText: { fontSize: 12, fontFamily: 'Inter_600SemiBold', color: colors.destructive },
+    cancelText: { fontSize: 12, fontFamily: 'Inter_700Bold', color: colors.destructive },
   });
 
   const formatDate = (date: string) => new Date(date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
@@ -68,19 +71,21 @@ function AppointmentCard({ appointment, onCancel }: { appointment: Appointment; 
     <View style={s.card}>
       <View style={s.statusBar} />
       <View style={s.body}>
-        <View style={s.row}>
+        <View style={s.topRow}>
           <Text style={s.serviceName}>{appointment.serviceName}</Text>
-          <View style={s.statusBadge}><Text style={s.statusText}>{STATUS_LABELS[appointment.status] ?? appointment.status}</Text></View>
+          <View style={s.statusBadge}>
+            <Text style={s.statusText}>{STATUS_LABELS[appointment.status] ?? appointment.status}</Text>
+          </View>
         </View>
         <View style={s.infoRow}>
-          <Ionicons name="calendar-outline" size={14} color={colors.mutedForeground} />
+          <Text style={s.infoEmoji}>📅</Text>
           <Text style={s.infoText}>{formatDate(appointment.date)}</Text>
-          <Text style={[s.infoText, { color: colors.border }]}>|</Text>
-          <Ionicons name="time-outline" size={14} color={colors.mutedForeground} />
+          <Text style={s.sep}>  |  </Text>
+          <Text style={s.infoEmoji}>⏱</Text>
           <Text style={s.infoText}>{appointment.startTime} – {appointment.endTime}</Text>
         </View>
         <View style={s.infoRow}>
-          <Ionicons name="person-outline" size={14} color={colors.mutedForeground} />
+          <Text style={s.infoEmoji}>💇</Text>
           <Text style={s.infoText}>{appointment.stylistName}</Text>
         </View>
         <View style={s.divider} />
@@ -89,18 +94,18 @@ function AppointmentCard({ appointment, onCancel }: { appointment: Appointment; 
           <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
             {appointment.paymentStatus === 'paid' ? (
               <View style={s.paidBadge}>
-                <Ionicons name="checkmark-circle" size={12} color="#22c55e" />
+                <Text style={{ fontSize: 12 }}>✓</Text>
                 <Text style={s.paidText}>Paid</Text>
               </View>
             ) : (
               <View style={s.pendingBadge}>
-                <Ionicons name="time-outline" size={12} color="#f59e0b" />
+                <Text style={{ fontSize: 12 }}>⏳</Text>
                 <Text style={s.pendingText}>Awaiting Confirm</Text>
               </View>
             )}
             {(appointment.status === 'confirmed' || appointment.status === 'pending') && (
               <TouchableOpacity style={s.cancelBtn} onPress={() => onCancel(appointment.id, appointment.serviceName)}>
-                <Feather name="x" size={12} color={colors.destructive} />
+                <Text style={{ fontSize: 12, color: '#ef4444' }}>✕</Text>
                 <Text style={s.cancelText}>Cancel</Text>
               </TouchableOpacity>
             )}
@@ -126,7 +131,7 @@ export default function CustomerAppointmentsScreen() {
 
   const cancelMutation = useUpdateAppointment({
     mutation: {
-      onSuccess: (_, vars) => {
+      onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: getGetAppointmentsQueryKey() });
         showNotification('info', 'Appointment cancelled', 'Your booking has been cancelled.');
       },
@@ -160,23 +165,27 @@ export default function CustomerAppointmentsScreen() {
   };
 
   const topPad = insets.top + (Platform.OS === 'web' ? 67 : 0);
-  const bottomPad = insets.bottom + (Platform.OS === 'web' ? 34 : 0) + 80;
+  const bottomPad = Platform.OS === 'android'
+    ? insets.bottom + 16
+    : insets.bottom + (Platform.OS === 'web' ? 34 : 0) + 72;
 
   const s = StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background },
     header: {
       paddingTop: topPad + 16, paddingHorizontal: 20, paddingBottom: 16,
-      backgroundColor: colors.background, borderBottomWidth: 1, borderBottomColor: colors.border,
+      backgroundColor: colors.primary,
     },
-    title: { fontSize: 26, fontFamily: 'Inter_700Bold', color: colors.foreground, letterSpacing: -0.5 },
-    filterRow: { flexDirection: 'row', marginTop: 14, backgroundColor: colors.muted, borderRadius: colors.radius, padding: 3 },
-    filterBtn: { flex: 1, paddingVertical: 8, borderRadius: colors.radius - 1, alignItems: 'center' },
-    filterBtnActive: { backgroundColor: colors.primary },
-    filterText: { fontSize: 13, fontFamily: 'Inter_600SemiBold', color: colors.mutedForeground },
-    filterTextActive: { color: '#fff' },
+    title: { fontSize: 28, fontFamily: 'Inter_700Bold', color: '#fff', letterSpacing: -0.5 },
+    subtitle: { fontSize: 13, color: 'rgba(255,255,255,0.75)', fontFamily: 'Inter_400Regular', marginTop: 2 },
+    filterRow: { flexDirection: 'row', marginTop: 14, backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 12, padding: 3 },
+    filterBtn: { flex: 1, paddingVertical: 9, borderRadius: 10, alignItems: 'center' },
+    filterBtnActive: { backgroundColor: '#fff' },
+    filterText: { fontSize: 13, fontFamily: 'Inter_600SemiBold', color: 'rgba(255,255,255,0.8)' },
+    filterTextActive: { color: colors.primary },
     listContent: { paddingTop: 16, paddingBottom: bottomPad },
     emptyWrap: { alignItems: 'center', paddingTop: 60, gap: 12 },
-    emptyText: { fontSize: 16, color: colors.mutedForeground, fontFamily: 'Inter_500Medium' },
+    emptyEmoji: { fontSize: 52 },
+    emptyText: { fontSize: 17, color: colors.mutedForeground, fontFamily: 'Inter_600SemiBold' },
     emptySubText: { fontSize: 13, color: colors.mutedForeground, fontFamily: 'Inter_400Regular' },
   });
 
@@ -184,6 +193,7 @@ export default function CustomerAppointmentsScreen() {
     <View style={s.container}>
       <View style={s.header}>
         <Text style={s.title}>My Bookings</Text>
+        <Text style={s.subtitle}>{filtered.length} {filter} appointment{filtered.length !== 1 ? 's' : ''}</Text>
         <View style={s.filterRow}>
           {(['upcoming', 'past'] as const).map((f) => (
             <TouchableOpacity
@@ -192,7 +202,7 @@ export default function CustomerAppointmentsScreen() {
               onPress={() => { setFilter(f); Haptics.selectionAsync(); }}
             >
               <Text style={[s.filterText, filter === f && s.filterTextActive]}>
-                {f === 'upcoming' ? 'Upcoming' : 'Past'}
+                {f === 'upcoming' ? '📅  Upcoming' : '🕐  Past'}
               </Text>
             </TouchableOpacity>
           ))}
@@ -207,7 +217,7 @@ export default function CustomerAppointmentsScreen() {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={s.emptyWrap}>
-            <Ionicons name="calendar-outline" size={48} color={colors.border} />
+            <Text style={s.emptyEmoji}>{filter === 'upcoming' ? '📭' : '📂'}</Text>
             <Text style={s.emptyText}>No {filter} appointments</Text>
             <Text style={s.emptySubText}>
               {filter === 'upcoming' ? 'Book a service to get started' : 'Your past bookings will appear here'}

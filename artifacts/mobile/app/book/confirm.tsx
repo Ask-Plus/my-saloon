@@ -1,5 +1,4 @@
 import { useColors } from '@/hooks/useColors';
-import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useRef } from 'react';
@@ -60,7 +59,7 @@ export default function ConfirmScreen() {
 
       <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
         <View style={s.checkCircle}>
-          <Ionicons name="checkmark" size={52} color={colors.primary} />
+          <Text style={{ fontSize: 52, color: colors.primary }}>✓</Text>
         </View>
       </Animated.View>
 
@@ -77,7 +76,7 @@ export default function ConfirmScreen() {
             <View style={s.row}>
               <Text style={s.rowLabel}>Amount Paid</Text>
               <View style={s.paidRow}>
-                <Ionicons name="checkmark-circle" size={16} color="#22c55e" />
+                <Text style={{ fontSize: 14, color: '#22c55e' }}>✓</Text>
                 <Text style={s.paidText}>${appt.servicePrice}</Text>
               </View>
             </View>

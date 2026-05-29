@@ -1,6 +1,5 @@
 import { useAuth } from '@/context/AuthContext';
 import { useColors } from '@/hooks/useColors';
-import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
@@ -69,62 +68,68 @@ export default function LoginScreen() {
     container: { flex: 1, backgroundColor: colors.background },
     scroll: { flexGrow: 1 },
     hero: {
-      height: 200,
+      height: 220,
       backgroundColor: colors.primary,
       alignItems: 'center',
       justifyContent: 'flex-end',
       paddingBottom: 28,
       paddingTop: insets.top + (Platform.OS === 'web' ? 67 : 0),
     },
-    heroImage: { position: 'absolute', width: '100%', height: '100%', opacity: 0.35 },
+    heroImage: { position: 'absolute', width: '100%', height: '100%', opacity: 0.3 },
     logoCircle: {
-      width: 64, height: 64, borderRadius: 32,
-      backgroundColor: 'rgba(255,255,255,0.2)',
+      width: 72, height: 72, borderRadius: 36,
+      backgroundColor: 'rgba(255,255,255,0.25)',
       alignItems: 'center', justifyContent: 'center',
-      marginBottom: 10,
-      borderWidth: 2, borderColor: 'rgba(255,255,255,0.4)',
+      marginBottom: 12,
+      borderWidth: 2, borderColor: 'rgba(255,255,255,0.5)',
     },
-    heroTitle: { fontSize: 26, fontFamily: 'Inter_700Bold', color: '#fff', letterSpacing: -0.5 },
-    heroSub: { fontSize: 13, color: 'rgba(255,255,255,0.8)', marginTop: 4, fontFamily: 'Inter_400Regular' },
+    logoEmoji: { fontSize: 32 },
+    heroTitle: { fontSize: 28, fontFamily: 'Inter_700Bold', color: '#fff', letterSpacing: -0.5 },
+    heroSub: { fontSize: 14, color: 'rgba(255,255,255,0.85)', marginTop: 4, fontFamily: 'Inter_400Regular' },
     body: { padding: 24 },
     roleRow: {
-      flexDirection: 'row', gap: 12, marginBottom: 24,
+      flexDirection: 'row', gap: 10, marginBottom: 24,
       backgroundColor: colors.muted, borderRadius: colors.radius,
       padding: 4,
     },
     roleBtn: {
-      flex: 1, paddingVertical: 11, borderRadius: colors.radius - 2,
-      alignItems: 'center', flexDirection: 'row', justifyContent: 'center', gap: 6,
+      flex: 1, paddingVertical: 12, borderRadius: colors.radius - 2,
+      alignItems: 'center', flexDirection: 'row', justifyContent: 'center', gap: 8,
     },
     roleBtnActive: { backgroundColor: colors.primary },
+    roleEmoji: { fontSize: 16 },
     roleBtnText: { fontSize: 14, fontFamily: 'Inter_600SemiBold', color: colors.mutedForeground },
     roleBtnTextActive: { color: '#fff' },
-    label: { fontSize: 13, fontFamily: 'Inter_600SemiBold', color: colors.mutedForeground, marginBottom: 8, letterSpacing: 0.5, textTransform: 'uppercase' },
+    label: { fontSize: 12, fontFamily: 'Inter_700Bold', color: colors.mutedForeground, marginBottom: 8, letterSpacing: 0.8, textTransform: 'uppercase' },
     inputWrap: {
       flexDirection: 'row', alignItems: 'center',
       borderWidth: 1.5, borderColor: colors.border,
-      borderRadius: colors.radius, paddingHorizontal: 16,
-      marginBottom: 16, backgroundColor: colors.card,
+      borderRadius: colors.radius, paddingHorizontal: 14,
+      marginBottom: 16, backgroundColor: colors.card, height: 52,
     },
     inputWrapError: { borderColor: colors.destructive },
-    input: { flex: 1, paddingVertical: 13, fontSize: 15, color: colors.foreground, fontFamily: 'Inter_400Regular' },
+    inputEmoji: { fontSize: 18, marginRight: 10 },
+    input: { flex: 1, fontSize: 15, color: colors.foreground, fontFamily: 'Inter_400Regular' },
     errorText: { fontSize: 12, color: colors.destructive, marginTop: -12, marginBottom: 10, fontFamily: 'Inter_400Regular' },
     sectionHeader: {
-      flexDirection: 'row', alignItems: 'center', gap: 8,
-      backgroundColor: `${colors.primary}12`, borderRadius: colors.radius,
-      padding: 12, marginBottom: 16, borderWidth: 1, borderColor: `${colors.primary}30`,
+      flexDirection: 'row', alignItems: 'center', gap: 10,
+      backgroundColor: `${colors.primary}10`, borderRadius: colors.radius,
+      padding: 14, marginBottom: 16, borderWidth: 1, borderColor: `${colors.primary}25`,
     },
-    sectionHeaderText: { fontSize: 13, fontFamily: 'Inter_600SemiBold', color: colors.primary, flex: 1 },
+    sectionEmoji: { fontSize: 20 },
+    sectionHeaderText: { fontSize: 13, fontFamily: 'Inter_700Bold', color: colors.primary, flex: 1 },
     verifyNote: {
       fontSize: 12, color: colors.mutedForeground, fontFamily: 'Inter_400Regular',
-      lineHeight: 18, marginBottom: 16, paddingHorizontal: 4,
+      lineHeight: 18, marginBottom: 16, paddingHorizontal: 2,
     },
     btn: {
       backgroundColor: colors.primary, borderRadius: colors.radius,
-      paddingVertical: 15, alignItems: 'center', marginTop: 4,
+      paddingVertical: 16, alignItems: 'center', marginTop: 4,
+      shadowColor: colors.primary, shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3, shadowRadius: 8, elevation: 4,
     },
     btnText: { fontSize: 16, fontFamily: 'Inter_700Bold', color: '#fff', letterSpacing: 0.3 },
-    footerNote: { textAlign: 'center', marginTop: 18, fontSize: 12, color: colors.mutedForeground, fontFamily: 'Inter_400Regular', lineHeight: 18 },
+    footerNote: { textAlign: 'center', marginTop: 20, fontSize: 12, color: colors.mutedForeground, fontFamily: 'Inter_400Regular', lineHeight: 18 },
     logoFooter: { alignItems: 'center', marginTop: 28, marginBottom: 8 },
     logoFooterImage: { width: 120, height: 48 },
     bottomPad: { height: insets.bottom + (Platform.OS === 'web' ? 34 : 0) + 16 },
@@ -136,7 +141,7 @@ export default function LoginScreen() {
         <View style={s.hero}>
           <Image source={require('@/assets/images/hero_salon.png')} style={s.heroImage} contentFit="cover" />
           <View style={s.logoCircle}>
-            <Ionicons name="cut" size={28} color="#fff" />
+            <Text style={s.logoEmoji}>✂</Text>
           </View>
           <Text style={s.heroTitle}>My Saloon</Text>
           <Text style={s.heroSub}>Your beauty, perfected</Text>
@@ -151,11 +156,7 @@ export default function LoginScreen() {
                 onPress={() => { setRole(r); setErrors({}); Haptics.selectionAsync(); }}
                 activeOpacity={0.8}
               >
-                <Ionicons
-                  name={r === 'customer' ? 'person' : 'briefcase'}
-                  size={16}
-                  color={role === r ? '#fff' : colors.mutedForeground}
-                />
+                <Text style={s.roleEmoji}>{r === 'customer' ? '👤' : '💼'}</Text>
                 <Text style={[s.roleBtnText, role === r && s.roleBtnTextActive]}>
                   {r === 'customer' ? 'Customer' : 'Salon Owner'}
                 </Text>
@@ -165,7 +166,7 @@ export default function LoginScreen() {
 
           <Text style={s.label}>Your Name</Text>
           <View style={[s.inputWrap, errors.name ? s.inputWrapError : undefined]}>
-            <Ionicons name="person-outline" size={18} color={colors.mutedForeground} style={{ marginRight: 8 }} />
+            <Text style={s.inputEmoji}>👤</Text>
             <TextInput
               style={s.input}
               placeholder="e.g. Lina Ahmed"
@@ -180,7 +181,7 @@ export default function LoginScreen() {
 
           <Text style={s.label}>Phone Number</Text>
           <View style={[s.inputWrap, errors.phone ? s.inputWrapError : undefined]}>
-            <Ionicons name="call-outline" size={18} color={colors.mutedForeground} style={{ marginRight: 8 }} />
+            <Text style={s.inputEmoji}>📞</Text>
             <TextInput
               style={s.input}
               placeholder="e.g. +966 5X XXX XXXX"
@@ -197,7 +198,7 @@ export default function LoginScreen() {
           {role === 'owner' && (
             <>
               <View style={s.sectionHeader}>
-                <Ionicons name="shield-checkmark-outline" size={18} color={colors.primary} />
+                <Text style={s.sectionEmoji}>🛡</Text>
                 <Text style={s.sectionHeaderText}>Business Verification</Text>
               </View>
               <Text style={s.verifyNote}>
@@ -206,10 +207,10 @@ export default function LoginScreen() {
 
               <Text style={s.label}>Business / Salon Name</Text>
               <View style={[s.inputWrap, errors.businessName ? s.inputWrapError : undefined]}>
-                <Ionicons name="storefront-outline" size={18} color={colors.mutedForeground} style={{ marginRight: 8 }} />
+                <Text style={s.inputEmoji}>🏪</Text>
                 <TextInput
                   style={s.input}
-                  placeholder="e.g. Lumina Beauty Salon"
+                  placeholder="e.g. My Beauty Salon"
                   placeholderTextColor={colors.mutedForeground}
                   value={businessName}
                   onChangeText={setBusinessName}
@@ -221,7 +222,7 @@ export default function LoginScreen() {
 
               <Text style={s.label}>Trade License / CR Number</Text>
               <View style={[s.inputWrap, errors.licenseNumber ? s.inputWrapError : undefined]}>
-                <Ionicons name="document-text-outline" size={18} color={colors.mutedForeground} style={{ marginRight: 8 }} />
+                <Text style={s.inputEmoji}>📋</Text>
                 <TextInput
                   style={s.input}
                   placeholder="e.g. CR-1234567890"
@@ -242,7 +243,7 @@ export default function LoginScreen() {
               <ActivityIndicator color="#fff" />
             ) : (
               <Text style={s.btnText}>
-                {role === 'customer' ? 'Continue as Customer' : 'Register Salon'}
+                {role === 'customer' ? 'Continue as Customer  →' : 'Register Salon  →'}
               </Text>
             )}
           </TouchableOpacity>

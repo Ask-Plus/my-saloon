@@ -1,6 +1,5 @@
 import { useColors } from '@/hooks/useColors';
 import { TimeSlot } from '@/types';
-import { Feather, Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import React, { useMemo, useState } from 'react';
 import {
@@ -72,7 +71,7 @@ function AddSlotModal({ visible, onClose, onSave, stylists }: {
           <View style={s.handle} />
           <View style={s.header}>
             <Text style={s.headerTitle}>Add Time Slot</Text>
-            <TouchableOpacity onPress={onClose}><Feather name="x" size={22} color={colors.foreground} /></TouchableOpacity>
+            <TouchableOpacity onPress={onClose}><Text style={{ fontSize: 20, color: colors.foreground }}>✕</Text></TouchableOpacity>
           </View>
           <ScrollView style={s.body} keyboardShouldPersistTaps="handled">
             <Text style={s.label}>Date</Text>
@@ -147,7 +146,9 @@ export default function OwnerSlotsScreen() {
   const formatDay = (d: string) => new Date(d + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 
   const topPad = insets.top + (Platform.OS === 'web' ? 67 : 0);
-  const bottomPad = insets.bottom + (Platform.OS === 'web' ? 34 : 0) + 80;
+  const bottomPad = Platform.OS === 'android'
+    ? insets.bottom + 16
+    : insets.bottom + (Platform.OS === 'web' ? 34 : 0) + 72;
 
   const s = StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background },
@@ -186,7 +187,7 @@ export default function OwnerSlotsScreen() {
       <View style={s.header}>
         <Text style={s.title}>Time Slots</Text>
         <TouchableOpacity style={s.addBtn} onPress={() => { setModalVisible(true); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}>
-          <Feather name="plus" size={22} color="#fff" />
+          <Text style={{ fontSize: 24, color: '#fff', lineHeight: 28 }}>+</Text>
         </TouchableOpacity>
       </View>
 
@@ -222,14 +223,14 @@ export default function OwnerSlotsScreen() {
                 { text: 'Cancel', style: 'cancel' },
                 { text: 'Delete', style: 'destructive', onPress: () => deleteMutation.mutate({ id: item.id }) },
               ])}>
-                <Feather name="trash-2" size={16} color={colors.destructive} />
+                <Text style={{ fontSize: 16, color: colors.destructive }}>🗑</Text>
               </TouchableOpacity>
             )}
           </View>
         )}
         ListEmptyComponent={
           <View style={{ alignItems: 'center', paddingTop: 60 }}>
-            <Ionicons name="time-outline" size={48} color={colors.border} />
+            <Text style={{ fontSize: 48 }}>🕐</Text>
             <Text style={{ color: colors.mutedForeground, marginTop: 12, fontFamily: 'Inter_500Medium' }}>No time slots available</Text>
           </View>
         }

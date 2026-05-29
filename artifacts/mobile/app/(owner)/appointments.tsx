@@ -1,7 +1,6 @@
 import { useColors } from '@/hooks/useColors';
 import { useNotification } from '@/context/NotificationContext';
 import { Appointment } from '@/types';
-import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import React, { useMemo, useState } from 'react';
 import { FlatList, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -43,7 +42,9 @@ export default function OwnerAppointmentsScreen() {
   }, [appointments, filter, today]);
 
   const topPad = insets.top + (Platform.OS === 'web' ? 67 : 0);
-  const bottomPad = insets.bottom + (Platform.OS === 'web' ? 34 : 0) + 80;
+  const bottomPad = Platform.OS === 'android'
+    ? insets.bottom + 16
+    : insets.bottom + (Platform.OS === 'web' ? 34 : 0) + 72;
   const formatDate = (d: string) => new Date(d + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 
   const s = StyleSheet.create({
@@ -114,15 +115,15 @@ export default function OwnerAppointmentsScreen() {
                   <Text style={s.priceText}>${item.servicePrice}</Text>
                 </View>
                 <View style={s.infoRow}>
-                  <Ionicons name="person-outline" size={13} color={colors.mutedForeground} />
+                  <Text style={{ fontSize: 12 }}>👤</Text>
                   <Text style={s.infoText}>{item.customerName} · {item.customerPhone}</Text>
                 </View>
                 <View style={s.infoRow}>
-                  <Ionicons name="calendar-outline" size={13} color={colors.mutedForeground} />
+                  <Text style={{ fontSize: 12 }}>📅</Text>
                   <Text style={s.infoText}>{formatDate(item.date)} at {item.startTime}</Text>
                 </View>
                 <View style={s.infoRow}>
-                  <Ionicons name="cut-outline" size={13} color={colors.mutedForeground} />
+                  <Text style={{ fontSize: 12 }}>✂</Text>
                   <Text style={s.infoText}>{item.stylistName}</Text>
                 </View>
                 <View style={s.divider} />
@@ -163,7 +164,7 @@ export default function OwnerAppointmentsScreen() {
         }}
         ListEmptyComponent={
           <View style={{ alignItems: 'center', paddingTop: 60 }}>
-            <Ionicons name="calendar-outline" size={48} color={colors.border} />
+            <Text style={{ fontSize: 48 }}>📭</Text>
             <Text style={{ color: colors.mutedForeground, marginTop: 12, fontFamily: 'Inter_500Medium' }}>No appointments found</Text>
           </View>
         }

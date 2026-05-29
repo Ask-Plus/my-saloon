@@ -1,0 +1,25 @@
+uploads = []
+
+[[generated]]
+id = "oJb35yraSuUaCjrn4OWKw"
+uri = "file://artifacts/mobile/assets/images/icon.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "_lTYwDPo5Pjl7sbePhFSg"
+uri = "file://artifacts/mobile/assets/images/hero_salon.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "dcBWAdcJlSW3Ct14F4RRh"
+uri = "file://artifacts/mobile/assets/images/nails_banner.png"
+type = "image"
+title = "generated_image"
+
+[[outputs]]
+id = "JlQ5aaakqkgk6Phi3JuIv"
+uri = "file://expo-qr.png"
+type = "image"
+title = "My Saloon — Scan with Expo Go"

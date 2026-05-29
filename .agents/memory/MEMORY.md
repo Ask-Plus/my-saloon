@@ -1,0 +1,1 @@
+- [Codegen api-zod index fix](codegen-api-zod.md) — after every orval codegen run, overwrite lib/api-zod/src/index.ts with only `export * from "./generated/api";`

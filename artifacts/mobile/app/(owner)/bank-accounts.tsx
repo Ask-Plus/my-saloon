@@ -2,7 +2,6 @@ import { useColors } from '@/hooks/useColors';
 import { useAuth } from '@/context/AuthContext';
 import { useNotification } from '@/context/NotificationContext';
 import { BankAccount } from '@/types';
-import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { Stack } from 'expo-router';
 import React, { useState } from 'react';
@@ -53,7 +52,9 @@ export default function BankAccountsScreen() {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const topPad = insets.top + (Platform.OS === 'web' ? 67 : 0);
-  const bottomPad = insets.bottom + (Platform.OS === 'web' ? 34 : 0) + 80;
+  const bottomPad = Platform.OS === 'android'
+    ? insets.bottom + 16
+    : insets.bottom + (Platform.OS === 'web' ? 34 : 0) + 72;
 
   const validate = () => {
     const e: Record<string, string> = {};
@@ -157,7 +158,7 @@ export default function BankAccountsScreen() {
       </View>
 
       <View style={s.infoBox}>
-        <Ionicons name="information-circle-outline" size={18} color={colors.primary} />
+        <Text style={{ fontSize: 16, color: colors.primary }}>ℹ</Text>
         <Text style={s.infoText}>
           Add your bank account so customers can transfer payment before their appointment. You'll see the transfer reference in each booking.
         </Text>
@@ -179,14 +180,14 @@ export default function BankAccountsScreen() {
                   <Text style={s.ibanText}>IBAN: {item.iban}</Text>
                 </View>
                 <TouchableOpacity style={s.deleteBtn} onPress={() => handleDelete(item)}>
-                  <Ionicons name="trash-outline" size={18} color={colors.destructive} />
+                  <Text style={{ fontSize: 17, color: colors.destructive }}>🗑</Text>
                 </TouchableOpacity>
               </View>
             </View>
           )}
           ListEmptyComponent={
             <View style={s.empty}>
-              <Ionicons name="card-outline" size={48} color={colors.border} />
+              <Text style={{ fontSize: 48 }}>🏦</Text>
               <Text style={s.emptyText}>No bank accounts yet</Text>
               <Text style={s.emptySub}>Add your bank account to enable bank transfer payments from customers.</Text>
             </View>
@@ -195,7 +196,7 @@ export default function BankAccountsScreen() {
       )}
 
       <TouchableOpacity style={s.addBtn} onPress={() => setModalVisible(true)}>
-        <Ionicons name="add-circle-outline" size={18} color="#fff" />
+        <Text style={{ fontSize: 20, color: '#fff' }}>+</Text>
         <Text style={s.addBtnText}>Add Bank Account</Text>
       </TouchableOpacity>
 
@@ -206,21 +207,21 @@ export default function BankAccountsScreen() {
 
             <Text style={s.inputLabel}>Bank Name</Text>
             <View style={[s.inputWrap, errors.bankName ? s.inputWrapError : undefined]}>
-              <Ionicons name="business-outline" size={16} color={colors.mutedForeground} style={{ marginRight: 8 }} />
+              <Text style={{ fontSize: 16, marginRight: 8 }}>🏦</Text>
               <TextInput style={s.input} value={bankName} onChangeText={setBankName} placeholder="e.g. Al Rajhi Bank" placeholderTextColor={colors.mutedForeground} autoCapitalize="words" />
             </View>
             {errors.bankName ? <Text style={s.errorText}>{errors.bankName}</Text> : null}
 
             <Text style={s.inputLabel}>Account Holder Name</Text>
             <View style={[s.inputWrap, errors.accountName ? s.inputWrapError : undefined]}>
-              <Ionicons name="person-outline" size={16} color={colors.mutedForeground} style={{ marginRight: 8 }} />
+              <Text style={{ fontSize: 16, marginRight: 8 }}>👤</Text>
               <TextInput style={s.input} value={accountName} onChangeText={setAccountName} placeholder="e.g. Lumina Beauty LLC" placeholderTextColor={colors.mutedForeground} autoCapitalize="words" />
             </View>
             {errors.accountName ? <Text style={s.errorText}>{errors.accountName}</Text> : null}
 
             <Text style={s.inputLabel}>IBAN</Text>
             <View style={[s.inputWrap, errors.iban ? s.inputWrapError : undefined]}>
-              <Ionicons name="card-outline" size={16} color={colors.mutedForeground} style={{ marginRight: 8 }} />
+              <Text style={{ fontSize: 16, marginRight: 8 }}>💳</Text>
               <TextInput style={s.input} value={iban} onChangeText={(v) => setIban(v.toUpperCase())} placeholder="e.g. SA1234567890123456789012" placeholderTextColor={colors.mutedForeground} autoCapitalize="characters" />
             </View>
             {errors.iban ? <Text style={s.errorText}>{errors.iban}</Text> : null}

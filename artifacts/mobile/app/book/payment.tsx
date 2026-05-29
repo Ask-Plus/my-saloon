@@ -2,7 +2,6 @@ import { useColors } from '@/hooks/useColors';
 import { useAuth } from '@/context/AuthContext';
 import { useNotification } from '@/context/NotificationContext';
 import { BankAccount } from '@/types';
-import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -26,7 +25,7 @@ function getApiBase(): string {
 export default function PaymentScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const { serviceId: sid, slotId: slid, stylistId: stid } = useLocalSearchParams<{ serviceId: string; slotId: string; stylistId: string }>();
+  const { serviceId: sid, slotId: slid, stylistId: stid, notes } = useLocalSearchParams<{ serviceId: string; slotId: string; stylistId: string; notes?: string }>();
   const { user } = useAuth();
   const { showNotification } = useNotification();
   const queryClient = useQueryClient();
@@ -88,6 +87,7 @@ export default function PaymentScreen() {
         endTime: slot.endTime,
         status: 'confirmed',
         paymentStatus: 'pending',
+        notes: notes || undefined,
       },
     });
   };
@@ -158,6 +158,12 @@ export default function PaymentScreen() {
             <View style={s.summaryRow}><Text style={s.summaryLabel}>Stylist</Text><Text style={s.summaryValue}>{stylist.name}</Text></View>
             <View style={s.summaryRow}><Text style={s.summaryLabel}>Date</Text><Text style={s.summaryValue}>{formatDate(slot.date)}</Text></View>
             <View style={s.summaryRow}><Text style={s.summaryLabel}>Time</Text><Text style={s.summaryValue}>{slot.startTime} – {slot.endTime}</Text></View>
+            {notes ? (
+              <View style={s.summaryRow}>
+                <Text style={s.summaryLabel}>Notes</Text>
+                <Text style={[s.summaryValue, { flex: 1, textAlign: 'right', maxWidth: '65%' }]} numberOfLines={2}>{notes}</Text>
+              </View>
+            ) : null}
             <View style={s.divider} />
             <View style={s.summaryRow}><Text style={s.totalLabel}>Total</Text><Text style={s.totalValue}>${service.price}</Text></View>
           </View>
@@ -173,7 +179,7 @@ export default function PaymentScreen() {
               <View style={s.bankCard}>
                 <View style={s.bankHeader}>
                   <View style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: `${colors.primary}15`, alignItems: 'center', justifyContent: 'center' }}>
-                    <Ionicons name="business-outline" size={18} color={colors.primary} />
+                    <Text style={{ fontSize: 18 }}>🏦</Text>
                   </View>
                   <Text style={s.bankHeaderText}>{bankAccount.bankName}</Text>
                 </View>
@@ -197,7 +203,7 @@ export default function PaymentScreen() {
             </>
           ) : (
             <View style={s.noBankBox}>
-              <Ionicons name="warning-outline" size={18} color="#f59e0b" />
+              <Text style={{ fontSize: 18 }}>⚠</Text>
               <Text style={s.noBankText}>
                 The salon hasn't set up bank transfer details yet. You can still confirm the booking and arrange payment at the salon.
               </Text>
@@ -210,7 +216,7 @@ export default function PaymentScreen() {
             activeOpacity={0.8}
           >
             <View style={[s.checkbox, confirmed && s.checkboxChecked]}>
-              {confirmed && <Ionicons name="checkmark" size={14} color="#fff" />}
+              {confirmed && <Text style={{ fontSize: 13, color: '#fff', fontWeight: 'bold' }}>✓</Text>}
             </View>
             <Text style={s.checkboxLabel}>
               I have transferred the payment (or will pay at the salon) and agree to the booking terms.
@@ -232,7 +238,7 @@ export default function PaymentScreen() {
             <ActivityIndicator color="#fff" />
           ) : (
             <>
-              <Ionicons name="checkmark-circle-outline" size={18} color={canConfirm ? '#fff' : colors.mutedForeground} />
+              <Text style={{ fontSize: 18, color: canConfirm ? '#fff' : colors.mutedForeground }}>✓</Text>
               <Text style={[s.payText, !canConfirm && s.payTextDisabled]}>Confirm Booking</Text>
             </>
           )}

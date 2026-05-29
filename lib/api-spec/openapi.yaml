@@ -738,6 +738,8 @@ components:
           type: string
         paymentStatus:
           type: string
+        notes:
+          type: string
         createdAt:
           type: string
       required:
@@ -788,6 +790,8 @@ components:
         status:
           type: string
         paymentStatus:
+          type: string
+        notes:
           type: string
       required:
         - customerId

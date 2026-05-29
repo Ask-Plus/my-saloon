@@ -1,6 +1,5 @@
 import { useColors } from '@/hooks/useColors';
 import { Service } from '@/types';
-import { Feather, Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import React, { useState } from 'react';
 import {
@@ -71,7 +70,7 @@ function ServiceModal({ visible, onClose, onSave, initial }: {
           <View style={s.handle} />
           <View style={s.header}>
             <Text style={s.headerTitle}>{initial ? 'Edit Service' : 'New Service'}</Text>
-            <TouchableOpacity onPress={onClose}><Feather name="x" size={22} color={colors.foreground} /></TouchableOpacity>
+            <TouchableOpacity onPress={onClose}><Text style={{ fontSize: 20, color: colors.foreground }}>✕</Text></TouchableOpacity>
           </View>
           <ScrollView style={s.bodyScroll} keyboardShouldPersistTaps="handled">
             <Text style={s.label}>Service Name *</Text>
@@ -123,7 +122,9 @@ export default function OwnerServicesScreen() {
   const deleteMutation = useDeleteService({ mutation: { onSuccess: invalidate } });
 
   const topPad = insets.top + (Platform.OS === 'web' ? 67 : 0);
-  const bottomPad = insets.bottom + (Platform.OS === 'web' ? 34 : 0) + 80;
+  const bottomPad = Platform.OS === 'android'
+    ? insets.bottom + 16
+    : insets.bottom + (Platform.OS === 'web' ? 34 : 0) + 72;
 
   const handleSave = (data: Omit<Service, 'id' | 'createdAt'>) => {
     if (editing) {
@@ -173,7 +174,7 @@ export default function OwnerServicesScreen() {
       <View style={s.header}>
         <Text style={s.title}>Services</Text>
         <TouchableOpacity style={s.addBtn} onPress={() => { setEditing(null); setModalVisible(true); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}>
-          <Feather name="plus" size={22} color="#fff" />
+          <Text style={{ fontSize: 24, color: '#fff', lineHeight: 28 }}>+</Text>
         </TouchableOpacity>
       </View>
 
@@ -191,17 +192,17 @@ export default function OwnerServicesScreen() {
             <Text style={s.priceText}>${item.price}</Text>
             <View style={s.actionRow}>
               <TouchableOpacity onPress={() => { setEditing(item); setModalVisible(true); }}>
-                <Feather name="edit-2" size={18} color={colors.mutedForeground} />
+                <Text style={{ fontSize: 16, color: colors.mutedForeground }}>✏</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => handleDelete(item.id, item.name)}>
-                <Feather name="trash-2" size={18} color={colors.destructive} />
+                <Text style={{ fontSize: 16, color: colors.destructive }}>🗑</Text>
               </TouchableOpacity>
             </View>
           </View>
         )}
         ListEmptyComponent={
           <View style={{ alignItems: 'center', paddingTop: 60 }}>
-            <Ionicons name="cut-outline" size={48} color={colors.border} />
+            <Text style={{ fontSize: 48 }}>✂</Text>
             <Text style={{ color: colors.mutedForeground, marginTop: 12, fontFamily: 'Inter_500Medium' }}>No services yet</Text>
           </View>
         }

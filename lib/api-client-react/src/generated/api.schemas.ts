@@ -123,6 +123,7 @@ export interface Appointment {
   endTime: string;
   status: string;
   paymentStatus: string;
+  notes?: string;
   createdAt: string;
 }
 
@@ -141,6 +142,7 @@ export interface CreateAppointmentBody {
   endTime: string;
   status: string;
   paymentStatus: string;
+  notes?: string;
 }
 
 export interface UpdateAppointmentBody {
