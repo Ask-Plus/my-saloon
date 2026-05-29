@@ -1,0 +1,858 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: Lumina Salon API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: users
+    description: User operations
+  - name: services
+    description: Service operations
+  - name: stylists
+    description: Stylist operations
+  - name: timeSlots
+    description: Time slot operations
+  - name: appointments
+    description: Appointment operations
+  - name: dashboard
+    description: Dashboard operations
+  - name: bankAccounts
+    description: Owner bank account operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /users/login:
+    post:
+      operationId: loginUser
+      tags: [users]
+      summary: Login or create user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginUserBody"
+      responses:
+        "200":
+          description: User
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/{id}/verify:
+    patch:
+      operationId: updateUserVerification
+      tags: [users]
+      summary: Update owner verification info
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateVerificationBody"
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /services:
+    get:
+      operationId: getServices
+      tags: [services]
+      summary: List all services
+      responses:
+        "200":
+          description: List of services
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Service"
+    post:
+      operationId: createService
+      tags: [services]
+      summary: Create a service
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateServiceBody"
+      responses:
+        "201":
+          description: Service created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+
+  /services/{id}:
+    get:
+      operationId: getService
+      tags: [services]
+      summary: Get a service by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Service
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateService
+      tags: [services]
+      summary: Update a service
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateServiceBody"
+      responses:
+        "200":
+          description: Service updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+    delete:
+      operationId: deleteService
+      tags: [services]
+      summary: Delete a service
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /stylists:
+    get:
+      operationId: getStylists
+      tags: [stylists]
+      summary: List all stylists
+      responses:
+        "200":
+          description: List of stylists
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Stylist"
+    post:
+      operationId: createStylist
+      tags: [stylists]
+      summary: Create a stylist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateStylistBody"
+      responses:
+        "201":
+          description: Stylist created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Stylist"
+
+  /stylists/{id}:
+    get:
+      operationId: getStylist
+      tags: [stylists]
+      summary: Get a stylist by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Stylist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Stylist"
+    patch:
+      operationId: updateStylist
+      tags: [stylists]
+      summary: Update a stylist
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateStylistBody"
+      responses:
+        "200":
+          description: Stylist updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Stylist"
+    delete:
+      operationId: deleteStylist
+      tags: [stylists]
+      summary: Delete a stylist
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /time-slots:
+    get:
+      operationId: getTimeSlots
+      tags: [timeSlots]
+      summary: List time slots
+      parameters:
+        - in: query
+          name: date
+          schema:
+            type: string
+        - in: query
+          name: stylistId
+          schema:
+            type: integer
+        - in: query
+          name: available
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: List of time slots
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TimeSlot"
+    post:
+      operationId: createTimeSlot
+      tags: [timeSlots]
+      summary: Create a time slot
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTimeSlotBody"
+      responses:
+        "201":
+          description: Time slot created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TimeSlot"
+
+  /time-slots/{id}:
+    get:
+      operationId: getTimeSlot
+      tags: [timeSlots]
+      summary: Get a time slot by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Time slot
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TimeSlot"
+    delete:
+      operationId: deleteTimeSlot
+      tags: [timeSlots]
+      summary: Delete a time slot
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /appointments:
+    get:
+      operationId: getAppointments
+      tags: [appointments]
+      summary: List appointments
+      parameters:
+        - in: query
+          name: customerId
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of appointments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Appointment"
+    post:
+      operationId: createAppointment
+      tags: [appointments]
+      summary: Create an appointment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAppointmentBody"
+      responses:
+        "201":
+          description: Appointment created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+
+  /appointments/{id}:
+    get:
+      operationId: getAppointment
+      tags: [appointments]
+      summary: Get an appointment by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Appointment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateAppointment
+      tags: [appointments]
+      summary: Update appointment status
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAppointmentBody"
+      responses:
+        "200":
+          description: Appointment updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+
+  /dashboard/stats:
+    get:
+      operationId: getDashboardStats
+      tags: [dashboard]
+      summary: Get dashboard statistics
+      responses:
+        "200":
+          description: Dashboard stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
+  /bank-accounts:
+    get:
+      operationId: getBankAccounts
+      tags: [bankAccounts]
+      summary: Get bank accounts for an owner
+      parameters:
+        - in: query
+          name: ownerId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of bank accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BankAccount"
+    post:
+      operationId: createBankAccount
+      tags: [bankAccounts]
+      summary: Create a bank account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBankAccountBody"
+      responses:
+        "201":
+          description: Bank account created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BankAccount"
+
+  /bank-accounts/{id}:
+    delete:
+      operationId: deleteBankAccount
+      tags: [bankAccounts]
+      summary: Delete a bank account
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /bank-accounts/public:
+    get:
+      operationId: getPublicBankAccount
+      tags: [bankAccounts]
+      summary: Get the first bank account for payment (public, no auth required)
+      responses:
+        "200":
+          description: Bank account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BankAccount"
+        "404":
+          description: No bank account configured
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required: [status]
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required: [error]
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        phone:
+          type: string
+        role:
+          type: string
+        businessName:
+          type: string
+          nullable: true
+        licenseUrl:
+          type: string
+          nullable: true
+        verificationStatus:
+          type: string
+        createdAt:
+          type: string
+      required: [id, name, phone, role, verificationStatus, createdAt]
+
+    LoginUserBody:
+      type: object
+      properties:
+        name:
+          type: string
+        phone:
+          type: string
+        role:
+          type: string
+        businessName:
+          type: string
+        licenseUrl:
+          type: string
+      required: [name, phone, role]
+
+    UpdateVerificationBody:
+      type: object
+      properties:
+        businessName:
+          type: string
+        licenseUrl:
+          type: string
+        verificationStatus:
+          type: string
+      required: []
+
+    Service:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        duration:
+          type: integer
+        category:
+          type: string
+        createdAt:
+          type: string
+      required: [id, name, description, price, duration, category, createdAt]
+
+    CreateServiceBody:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        duration:
+          type: integer
+        category:
+          type: string
+      required: [name, price, duration, category]
+
+    UpdateServiceBody:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        duration:
+          type: integer
+        category:
+          type: string
+
+    Stylist:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        title:
+          type: string
+        specialties:
+          type: array
+          items:
+            type: string
+        rating:
+          type: number
+        reviewCount:
+          type: integer
+        createdAt:
+          type: string
+      required: [id, name, title, specialties, rating, reviewCount, createdAt]
+
+    CreateStylistBody:
+      type: object
+      properties:
+        name:
+          type: string
+        title:
+          type: string
+        specialties:
+          type: array
+          items:
+            type: string
+        rating:
+          type: number
+        reviewCount:
+          type: integer
+      required: [name]
+
+    UpdateStylistBody:
+      type: object
+      properties:
+        name:
+          type: string
+        title:
+          type: string
+        specialties:
+          type: array
+          items:
+            type: string
+        rating:
+          type: number
+        reviewCount:
+          type: integer
+
+    TimeSlot:
+      type: object
+      properties:
+        id:
+          type: integer
+        date:
+          type: string
+        startTime:
+          type: string
+        endTime:
+          type: string
+        stylistId:
+          type: integer
+        isBooked:
+          type: boolean
+        createdAt:
+          type: string
+      required: [id, date, startTime, endTime, stylistId, isBooked, createdAt]
+
+    CreateTimeSlotBody:
+      type: object
+      properties:
+        date:
+          type: string
+        startTime:
+          type: string
+        endTime:
+          type: string
+        stylistId:
+          type: integer
+      required: [date, startTime, endTime, stylistId]
+
+    Appointment:
+      type: object
+      properties:
+        id:
+          type: integer
+        customerId:
+          type: integer
+        customerName:
+          type: string
+        customerPhone:
+          type: string
+        serviceId:
+          type: integer
+        serviceName:
+          type: string
+        servicePrice:
+          type: number
+        stylistId:
+          type: integer
+        stylistName:
+          type: string
+        slotId:
+          type: integer
+        date:
+          type: string
+        startTime:
+          type: string
+        endTime:
+          type: string
+        status:
+          type: string
+        paymentStatus:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - customerId
+        - customerName
+        - customerPhone
+        - serviceId
+        - serviceName
+        - servicePrice
+        - stylistId
+        - stylistName
+        - slotId
+        - date
+        - startTime
+        - endTime
+        - status
+        - paymentStatus
+        - createdAt
+
+    CreateAppointmentBody:
+      type: object
+      properties:
+        customerId:
+          type: integer
+        customerName:
+          type: string
+        customerPhone:
+          type: string
+        serviceId:
+          type: integer
+        serviceName:
+          type: string
+        servicePrice:
+          type: number
+        stylistId:
+          type: integer
+        stylistName:
+          type: string
+        slotId:
+          type: integer
+        date:
+          type: string
+        startTime:
+          type: string
+        endTime:
+          type: string
+        status:
+          type: string
+        paymentStatus:
+          type: string
+      required:
+        - customerId
+        - customerName
+        - customerPhone
+        - serviceId
+        - serviceName
+        - servicePrice
+        - stylistId
+        - stylistName
+        - slotId
+        - date
+        - startTime
+        - endTime
+        - status
+        - paymentStatus
+
+    UpdateAppointmentBody:
+      type: object
+      properties:
+        status:
+          type: string
+        paymentStatus:
+          type: string
+      required: []
+
+    DashboardStats:
+      type: object
+      properties:
+        todayCount:
+          type: integer
+        upcomingCount:
+          type: integer
+        totalRevenue:
+          type: number
+        openSlotsCount:
+          type: integer
+      required: [todayCount, upcomingCount, totalRevenue, openSlotsCount]
+
+    BankAccount:
+      type: object
+      properties:
+        id:
+          type: integer
+        ownerId:
+          type: integer
+        bankName:
+          type: string
+        accountName:
+          type: string
+        iban:
+          type: string
+        createdAt:
+          type: string
+      required: [id, ownerId, bankName, accountName, iban, createdAt]
+
+    CreateBankAccountBody:
+      type: object
+      properties:
+        ownerId:
+          type: integer
+        bankName:
+          type: string
+        accountName:
+          type: string
+        iban:
+          type: string
+      required: [ownerId, bankName, accountName, iban]
